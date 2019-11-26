@@ -415,6 +415,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       id = builderAssistant.applyCurrentNamespace(id, false);
       //比较简单，就是将sql片段放入hashmap,不过此时还没有解析sql片段
       if (databaseIdMatchesCurrent(id, databaseId, requiredDatabaseId)) {
+        //XMLMapperBuilder的构造函数中，可以看到该字段指向了Configuration.sqlFragments
         sqlFragments.put(id, context);
       }
     }

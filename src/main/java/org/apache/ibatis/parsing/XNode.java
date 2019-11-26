@@ -326,7 +326,15 @@ public class XNode {
     return children;
   }
 
-  //得到孩子，返回Properties，孩子的格式肯定都有name,value属性
+  /**
+   * <property name="driverClassName" value="${rds.driver}" />
+   * <property name="url" value="${rds.url}" />
+   * <property name="username" value="${rds.username}" />
+   * <property name="password" value="${rds.password}" />
+   * <property name="maxActive" value="${jdbc.maxActive}" />
+   * 得到孩子，返回Properties，孩子的格式肯定都有name,value属性
+   * @return
+   */
   public Properties getChildrenAsProperties() {
     Properties properties = new Properties();
     for (XNode child : getChildren()) {

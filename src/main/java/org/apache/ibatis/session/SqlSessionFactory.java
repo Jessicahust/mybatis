@@ -28,17 +28,38 @@ import java.sql.Connection;
  */
 public interface SqlSessionFactory {
 
-  //8个方法可以用来创建SqlSession实例
+  /**
+   * 8个方法可以用来创建SqlSession实例
+   * @return
+   */
   SqlSession openSession();
 
-  //自动提交
+  /**
+   * 自动提交
+   * @param autoCommit
+   * @return
+   */
   SqlSession openSession(boolean autoCommit);
-  //连接
+
+  /**
+   * 连接
+   * @param connection
+   * @return
+   */
   SqlSession openSession(Connection connection);
-  //事务隔离级别
+
+  /**
+   * 事务隔离级别
+   * @param level
+   * @return
+   */
   SqlSession openSession(TransactionIsolationLevel level);
 
-  //执行器的类型
+  /**
+   * 执行器的类型
+   * @param execType
+   * @return
+   */
   SqlSession openSession(ExecutorType execType);
   SqlSession openSession(ExecutorType execType, boolean autoCommit);
   SqlSession openSession(ExecutorType execType, TransactionIsolationLevel level);

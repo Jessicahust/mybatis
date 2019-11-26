@@ -23,6 +23,10 @@
 
 <configuration>
 
+    <settings>
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false" />
+    </settings>
 
 </configuration>
 

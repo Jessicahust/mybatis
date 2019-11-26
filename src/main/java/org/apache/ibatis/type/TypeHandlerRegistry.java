@@ -39,8 +39,14 @@ import org.apache.ibatis.io.ResolverUtil;
  */
 public final class TypeHandlerRegistry {
 
-  //枚举型map
+  /**
+   * 记录jdbcType与TypeHandler之间的对应关系，其中JdbcType是一个枚举类型，它对应JDBC类型，
+   * 该集合主要用于从结果集读取数据时，将数据从jdbc类型转换为java类型
+   */
   private final Map<JdbcType, TypeHandler<?>> JDBC_TYPE_HANDLER_MAP = new EnumMap<JdbcType, TypeHandler<?>>(JdbcType.class);
+  /**
+   * 记录了java类型转换为jdbc类型时，需要使用的handler，一个java类型可以对应多个jdbcType
+   */
   private final Map<Type, Map<JdbcType, TypeHandler<?>>> TYPE_HANDLER_MAP = new HashMap<Type, Map<JdbcType, TypeHandler<?>>>();
   private final TypeHandler<Object> UNKNOWN_TYPE_HANDLER = new UnknownTypeHandler(this);
   private final Map<Class<?>, TypeHandler<?>> ALL_TYPE_HANDLERS_MAP = new HashMap<Class<?>, TypeHandler<?>>();

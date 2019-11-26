@@ -102,6 +102,11 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
       //通过事务工厂来产生一个事务
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
       //生成一个执行器(事务包含在执行器里)
+      //根据不同的条件，创建不同的执行器
+      //默认ExecutorType.SIMPLE SimpleExecutor
+      //ExecutorType.BATCH  BatchExecutor
+      //ExecutorType.REUSE  ReuseExecutor
+      //如果cacheEnabled设置了，使用二级缓存 CachingExecutor
       final Executor executor = configuration.newExecutor(tx, execType);
       //然后产生一个DefaultSqlSession
       return new DefaultSqlSession(configuration, executor, autoCommit);

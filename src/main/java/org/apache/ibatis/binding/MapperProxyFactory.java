@@ -26,7 +26,7 @@ import org.apache.ibatis.session.SqlSession;
  * @author Lasse Voss
  */
 /**
- * 映射器代理工厂
+ * 映射器代理工厂，产生MapperProxy对象，由代理对象执行SQL
  */
 public class MapperProxyFactory<T> {
 

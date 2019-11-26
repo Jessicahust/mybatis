@@ -48,7 +48,7 @@ public class XMLIncludeTransformer {
   public void applyIncludes(Node source) {
     if (source.getNodeName().equals("include")) {
       //走到这里，单独解析<include refid="userColumns"/>
-      //拿到SQL片段
+      //拿到SQL片段，若refid中包含属性占位符${}则需先将属性占位符替换为对应的属性值
       Node toInclude = findSqlFragment(getStringAttribute(source, "refid"));
       //递归调用自己,应用上?
       applyIncludes(toInclude);

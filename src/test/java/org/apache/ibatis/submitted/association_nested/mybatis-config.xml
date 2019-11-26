@@ -16,6 +16,16 @@
 -->
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+
+	<objectFactory type="org.apache.ibatis.builder.ExampleObjectFactory">
+		<property name="objectFactoryProperty" value="100"/>
+	</objectFactory>
+
+	<plugins>
+		<plugin interceptor="org.apache.ibatis.builder.ExamplePlugin">
+			<property name="pluginProperty" value="100"/>
+		</plugin>
+	</plugins>
 	<environments default="development">
 		<environment id="development">
 			<transactionManager type="JDBC" />
@@ -27,6 +37,7 @@
 			</dataSource>
 		</environment>
 	</environments>
+
 	<mappers>
 		<mapper class="org.apache.ibatis.submitted.association_nested.FolderMapper" />
 	</mappers>

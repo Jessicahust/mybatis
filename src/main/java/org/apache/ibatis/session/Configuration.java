@@ -471,7 +471,13 @@ public class Configuration {
     return MetaObject.forObject(object, objectFactory, objectWrapperFactory);
   }
 
-  //创建参数处理器
+  /**
+   * 创建参数处理器
+   * @param mappedStatement
+   * @param parameterObject
+   * @param boundSql
+   * @return
+   */
   public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
     //创建ParameterHandler
     ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement, parameterObject, boundSql);
@@ -480,7 +486,16 @@ public class Configuration {
     return parameterHandler;
   }
 
-  //创建结果集处理器
+  /**
+   * 创建结果集处理器
+   * @param executor
+   * @param mappedStatement
+   * @param rowBounds
+   * @param parameterHandler
+   * @param resultHandler
+   * @param boundSql
+   * @return
+   */
   public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds, ParameterHandler parameterHandler,
       ResultHandler resultHandler, BoundSql boundSql) {
     //创建DefaultResultSetHandler(稍老一点的版本3.1是创建NestedResultSetHandler或者FastResultSetHandler)
@@ -490,7 +505,16 @@ public class Configuration {
     return resultSetHandler;
   }
 
-  //创建语句处理器
+  /**
+   * 创建语句处理器
+   * @param executor
+   * @param mappedStatement
+   * @param parameterObject
+   * @param rowBounds
+   * @param resultHandler
+   * @param boundSql
+   * @return
+   */
   public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
     //创建路由选择语句处理器
     StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
@@ -503,7 +527,12 @@ public class Configuration {
     return newExecutor(transaction, defaultExecutorType);
   }
 
-  //产生执行器
+  /**
+   * 产生执行器
+   * @param transaction
+   * @param executorType
+   * @return
+   */
   public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
     executorType = executorType == null ? defaultExecutorType : executorType;
     //这句再做一下保护,囧,防止粗心大意的人将defaultExecutorType设成null?

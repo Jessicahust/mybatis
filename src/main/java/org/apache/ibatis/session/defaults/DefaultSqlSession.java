@@ -44,14 +44,22 @@ import org.apache.ibatis.session.SqlSession;
  *
  */
 public class DefaultSqlSession implements SqlSession {
-
+  /**
+   * 配置对象
+   */
   private Configuration configuration;
+  /**
+   * 底层依赖的Executor对象
+   */
   private Executor executor;
 
   /**
    * 是否自动提交
    */
   private boolean autoCommit;
+  /**
+   * 当前缓存中是否有脏数据
+   */
   private boolean dirty;
   
   public DefaultSqlSession(Configuration configuration, Executor executor, boolean autoCommit) {

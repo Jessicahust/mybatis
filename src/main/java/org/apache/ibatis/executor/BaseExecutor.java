@@ -190,6 +190,7 @@ public abstract class BaseExecutor implements Executor {
       if (configuration.getLocalCacheScope() == LocalCacheScope.STATEMENT) {
         // issue #482
     	//如果是STATEMENT，清本地缓存
+        //LocalCacheScope.SESSION 容易产生脏读，另一个session中将数据修改了，但是这个session中读取缓存就没读到最新数据
         clearLocalCache();
       }
     }

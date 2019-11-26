@@ -26,15 +26,20 @@ import org.apache.ibatis.cache.Cache;
  *
  * @author Clinton Begin
  */
-/*
+/**
  * 最近最少使用缓存
  * 基于 LinkedHashMap 覆盖其 removeEldestEntry 方法实现。
  */
 public class LruCache implements Cache {
 
   private final Cache delegate;
-  //额外用了一个map才做lru，但是委托的Cache里面其实也是一个map，这样等于用2倍的内存实现lru功能
+  /**
+   * 额外用了一个map才做lru，但是委托的Cache里面其实也是一个map，这样等于用2倍的内存实现lru功能
+   */
   private Map<Object, Object> keyMap;
+  /**
+   * 记录最少被使用 的缓存项的 key
+   */
   private Object eldestKey;
 
   public LruCache(Cache delegate) {
@@ -81,7 +86,7 @@ public class LruCache implements Cache {
 
   @Override
   public Object getObject(Object key) {
-      //get的时候调用一下LinkedHashMap.get，让经常访问的值移动到链表末尾
+    //get的时候调用一下LinkedHashMap.get，让经常访问的值移动到链表末尾
     keyMap.get(key); //touch
     return delegate.getObject(key);
   }
@@ -106,6 +111,7 @@ public class LruCache implements Cache {
     keyMap.put(key, key);
     //keyMap是linkedhashmap，最老的记录已经被移除了，然后这里我们还需要移除被委托的那个cache的记录
     if (eldestKey != null) {
+      //eldestKey不为空，说明空间不足，加入元素后，需要删除最少被使用的元素
       delegate.removeObject(eldestKey);
       eldestKey = null;
     }

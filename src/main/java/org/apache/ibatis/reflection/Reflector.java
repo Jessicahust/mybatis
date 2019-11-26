@@ -56,35 +56,59 @@ public class Reflector {
   private static final Map<Class<?>, Reflector> REFLECTOR_MAP = new ConcurrentHashMap<Class<?>, Reflector>();
 
   private Class<?> type;
-  //getter的属性列表
+  /**
+   * 可读属性的名称集合，可读属性就是存在相应 getter 方法的属性，初始值为空数组
+   */
   private String[] readablePropertyNames = EMPTY_STRING_ARRAY;
-  //setter的属性列表
+  /**
+   * 可写属性的名称集合，可写属性就是存在相应 setter 方法的属性，初始值为空数纽
+   */
   private String[] writeablePropertyNames = EMPTY_STRING_ARRAY;
-  //setter的方法列表
+  /**
+   *  记录了属性相应 的 setter 方法 ， key 是属性名称， value 是 Invoker 对象，它是对 setter 方法对应
+   */
   private Map<String, Invoker> setMethods = new HashMap<String, Invoker>();
-  //getter的方法列表
+  /**
+   * 属性相应 的 getter 方法集合 ， key 是属 性名称， value 也是 Invoker 对象
+   */
   private Map<String, Invoker> getMethods = new HashMap<String, Invoker>();
-  //setter的类型列表
+  /**
+   * 记录了属性相应的 setter 方法 的参数值类型， key 是属性名称， value 是 setter 方法的参数类型
+   */
   private Map<String, Class<?>> setTypes = new HashMap<String, Class<?>>();
-  //getter的类型列表
+  /**
+   * 记录 了属性相应的 getter 方法的返回位类型， key是属性名称， value 是 getter 方法的返回位类型
+   */
   private Map<String, Class<?>> getTypes = new HashMap<String, Class<?>>();
-  //构造函数
+  /**
+   * 记录了默认构造方法
+   */
   private Constructor<?> defaultConstructor;
-
+  /**
+   * 记录了所有属性名 称的 集合
+   */
   private Map<String, String> caseInsensitivePropertyMap = new HashMap<String, String>();
 
   private Reflector(Class<?> clazz) {
     type = clazz;
     //加入构造函数
+    // 解析目标类的默认构造方法，并赋值给 defaultConstructor 变量
     addDefaultConstructor(clazz);
     //加入getter
+    // 解析 getter 方法，并将解析结果放入 getMethods 中
     addGetMethods(clazz);
     //加入setter
+    // 解析 setter 方法，并将解析结果放入 setMethods 中
     addSetMethods(clazz);
     //加入字段
+    // 解析属性字段，并将解析结果添加到 setMethods 或 getMethods 中
     addFields(clazz);
+    // 从 getMethods 映射中获取可读属性名数组
     readablePropertyNames = getMethods.keySet().toArray(new String[getMethods.keySet().size()]);
+    // 从 setMethods 映射中获取可写属性名数组
     writeablePropertyNames = setMethods.keySet().toArray(new String[setMethods.keySet().size()]);
+    // 将所有属性名的大写形式作为键，属性名作为值，
+    // 存入到 caseInsensitivePropertyMap 中
     for (String propName : readablePropertyNames) {
         //这里为了能找到某一个属性，就把他变成大写作为map的key。。。
       caseInsensitivePropertyMap.put(propName.toUpperCase(Locale.ENGLISH), propName);

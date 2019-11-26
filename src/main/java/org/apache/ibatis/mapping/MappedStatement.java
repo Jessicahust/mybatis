@@ -284,6 +284,7 @@ public final class MappedStatement {
   
   public BoundSql getBoundSql(Object parameterObject) {
 	//其实就是调用sqlSource.getBoundSql
+    //获取执行SQL，由于动态SQL的存在，需要解析
     BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
     //剩下的可以暂时忽略
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();

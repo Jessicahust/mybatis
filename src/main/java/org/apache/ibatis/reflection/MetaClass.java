@@ -31,7 +31,7 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
  */
 /**
  * 原类
- * 
+ * 元信息类 MetaClass 的构造方法为私有类型，所以不能直接创建，必须使用其提供的 forClass 方法进行创建
  */
 public class MetaClass {
 
@@ -148,12 +148,15 @@ public class MetaClass {
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {
       if (reflector.hasSetter(prop.getName())) {
+        // 为属性创建创建 MetaClass
         MetaClass metaProp = metaClassForProperty(prop.getName());
+        //递归调用判断是否有属性
         return metaProp.hasSetter(prop.getChildren());
       } else {
         return false;
       }
     } else {
+      // 再次调用 hasSetter
       return reflector.hasSetter(prop.getName());
     }
   }

@@ -38,7 +38,10 @@ import java.util.Set;
 public class MapperRegistry {
 
   private Configuration config;
-  //将已经添加的映射都放入HashMap
+  /**
+   * 在解析映射xml文件时，会将对应的接口类和代理工厂加入map中
+   * 将已经添加的映射都放入HashMap
+   */
   private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<Class<?>, MapperProxyFactory<?>>();
 
   public MapperRegistry(Configuration config) {
@@ -46,7 +49,9 @@ public class MapperRegistry {
   }
 
   @SuppressWarnings("unchecked")
-  //返回代理类
+  /**
+   * 返回代理工厂类
+   */
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
     if (mapperProxyFactory == null) {
@@ -58,12 +63,22 @@ public class MapperRegistry {
       throw new BindingException("Error getting mapper instance. Cause: " + e, e);
     }
   }
-  
+
+  /**
+   * 判断是否已经存在该接口的代理工厂类
+   * @param type
+   * @param <T>
+   * @return
+   */
   public <T> boolean hasMapper(Class<T> type) {
     return knownMappers.containsKey(type);
   }
 
-  //看一下如何添加一个映射
+  /**
+   * 看一下如何添加一个映射
+   * @param type
+   * @param <T>
+   */
   public <T> void addMapper(Class<T> type) {
     //mapper必须是接口！才会添加
     if (type.isInterface()) {

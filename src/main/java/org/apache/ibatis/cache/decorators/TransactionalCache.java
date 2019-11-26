@@ -88,6 +88,7 @@ public class TransactionalCache implements Cache {
 
   @Override
   public void putObject(Object key, Object object) {
+    //并没有将数据放入缓存中，而是把这次的数据放入待提交的Map中，等待Sqlsession commit后，再提交
     entriesToAddOnCommit.put(key, object);
   }
 
@@ -107,6 +108,7 @@ public class TransactionalCache implements Cache {
     if (clearOnCommit) {
       delegate.clear();
     }
+    //Sqlsession后会调用commit，然后将数据刷入缓存中
     flushPendingEntries();
     reset();
   }

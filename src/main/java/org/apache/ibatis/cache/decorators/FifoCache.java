@@ -26,7 +26,7 @@ import org.apache.ibatis.cache.Cache;
  *
  * @author Clinton Begin
  */
-/*
+/**
  * FIFO缓存
  * 这个类就是维护一个FIFO链表，其他都委托给所包装的cache去做。典型的装饰模式
  */

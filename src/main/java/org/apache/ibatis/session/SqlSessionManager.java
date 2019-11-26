@@ -36,10 +36,18 @@ import org.apache.ibatis.reflection.ExceptionUtil;
  *
  */
 public class SqlSessionManager implements SqlSessionFactory, SqlSession {
-
+  /**
+   * 底层封装的 SqlSessionFactory 对象
+   */
   private final SqlSessionFactory sqlSessionFactory;
+  /**
+   * localSqlSession 中记录的 SqlSession 对象的代理对象，在 SqlSessionManager 初始化时，
+   * 会使用 JDK动态代理的方式为 localSqlSession创建代理对象
+   */
   private final SqlSession sqlSessionProxy;
-
+  /**
+   * ThreadLocal 变量，记录一个与当前线程绑定的 SqlSession 对象
+   */
   private ThreadLocal<SqlSession> localSqlSession = new ThreadLocal<SqlSession>();
 
   private SqlSessionManager(SqlSessionFactory sqlSessionFactory) {

@@ -51,7 +51,9 @@ import org.apache.ibatis.type.JdbcType;
  */
 public class XMLConfigBuilder extends BaseBuilder {
 
-  //是否已解析，XPath解析器,环境
+  /**
+   * 是否已解析，XPath解析器,环境
+   */
   private boolean parsed;
   private XPathParser parser;
   private String environment;
@@ -125,6 +127,8 @@ public class XMLConfigBuilder extends BaseBuilder {
 //  </configuration>
     
     //根节点是configuration
+    // 解析配置
+    //注意一个 xpath 表达式—— /configuration。这个表达 式代表的是 MyBatis 配置文件的 <configuration> 节点，这里通过 xpath 选中这个节点，并传 递给 parseConfiguration 方法
     parseConfiguration(parser.evalNode("/configuration"));
     return configuration;
   }
@@ -160,19 +164,22 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
-  //2.类型别名
-//<typeAliases>
-//  <typeAlias alias="Author" type="domain.blog.Author"/>
-//  <typeAlias alias="Blog" type="domain.blog.Blog"/>
-//  <typeAlias alias="Comment" type="domain.blog.Comment"/>
-//  <typeAlias alias="Post" type="domain.blog.Post"/>
-//  <typeAlias alias="Section" type="domain.blog.Section"/>
-//  <typeAlias alias="Tag" type="domain.blog.Tag"/>
-//</typeAliases>
-//or    
-//<typeAliases>
-//  <package name="domain.blog"/>
-//</typeAliases>  
+  /**
+   *   2.类型别名
+   * <typeAliases>
+   *   <typeAlias alias="Author" type="domain.blog.Author"/>
+   *   <typeAlias alias="Blog" type="domain.blog.Blog"/>
+   *   <typeAlias alias="Comment" type="domain.blog.Comment"/>
+   *   <typeAlias alias="Post" type="domain.blog.Post"/>
+   *   <typeAlias alias="Section" type="domain.blog.Section"/>
+   *   <typeAlias alias="Tag" type="domain.blog.Tag"/>
+   * </typeAliases>
+   * or
+   * <typeAliases>
+   *   <package name="domain.blog"/>
+   * </typeAliases>
+   * @param parent
+   */
   private void typeAliasesElement(XNode parent) {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
@@ -205,11 +212,11 @@ public class XMLConfigBuilder extends BaseBuilder {
 
   //3.插件
   //MyBatis 允许你在某一点拦截已映射语句执行的调用。默认情况下,MyBatis 允许使用插件来拦截方法调用
-//<plugins>
-//  <plugin interceptor="org.mybatis.example.ExamplePlugin">
-//    <property name="someProperty" value="100"/>
-//  </plugin>
-//</plugins>  
+/*<plugins>
+  <plugin interceptor="org.mybatis.example.ExamplePlugin">
+    <property name="someProperty" value="100"/>
+  </plugin>
+</plugins> */
   private void pluginElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
@@ -229,10 +236,13 @@ public class XMLConfigBuilder extends BaseBuilder {
 //</objectFactory>
   private void objectFactoryElement(XNode context) throws Exception {
     if (context != null) {
+      //获取配置的对象工厂
       String type = context.getStringAttribute("type");
       Properties properties = context.getChildrenAsProperties();
       ObjectFactory factory = (ObjectFactory) resolveClass(type).newInstance();
+      //将配置的属性值设置到对象工厂
       factory.setProperties(properties);
+      //添加到configuration
       configuration.setObjectFactory(factory);
     }
   }
@@ -246,11 +256,15 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
-  //1.properties
-  //<properties resource="org/mybatis/example/config.properties">
-  //    <property name="username" value="dev_user"/>
-  //    <property name="password" value="F2Fa3!33TYyg"/>
-  //</properties>
+  /**
+   * 1.properties
+   *   <properties resource="org/mybatis/example/config.properties">
+   *       <property name="username" value="dev_user"/>
+   *       <property name="password" value="F2Fa3!33TYyg"/>
+   *   </properties>
+   * @param context
+   * @throws Exception
+   */
   private void propertiesElement(XNode context) throws Exception {
     if (context != null) {
       //如果在这些地方,属性多于一个的话,MyBatis 按照如下的顺序加载它们:
@@ -263,14 +277,18 @@ public class XMLConfigBuilder extends BaseBuilder {
       //1.XNode.getChildrenAsProperties函数方便得到孩子所有Properties
       Properties defaults = context.getChildrenAsProperties();
       //2.然后查找resource或者url,加入前面的Properties
+        // 解析<properties>的 resource 和 url属性 ， 这两个属性用于确定 properties 配置文件的位置
       String resource = context.getStringAttribute("resource");
       String url = context.getStringAttribute("url");
       if (resource != null && url != null) {
         throw new BuilderException("The properties element cannot specify both a URL and a resource based property file reference.  Please specify one or the other.");
       }
+      //导致同名属性覆盖的问题，也就是从文件系统，或者网络上读取到的属性和属性值会覆 盖掉<properties>子节点中同名的属性和及值
       if (resource != null) {
+        // 从文件系统中加载并解析属性文件
         defaults.putAll(Resources.getResourceAsProperties(resource));
       } else if (url != null) {
+        // 通过 url 加载并解析属性文件
         defaults.putAll(Resources.getUrlAsProperties(url));
       }
       //3.Variables也全部加入Properties
@@ -279,6 +297,7 @@ public class XMLConfigBuilder extends BaseBuilder {
         defaults.putAll(vars);
       }
       parser.setVariables(defaults);
+      // 将属性值设置到 configuration 中
       configuration.setVariables(defaults);
     }
   }
@@ -302,11 +321,14 @@ public class XMLConfigBuilder extends BaseBuilder {
 //</settings>
   private void settingsElement(XNode context) throws Exception {
     if (context != null) {
+      // 获取 settings 子节点中的内容
       Properties props = context.getChildrenAsProperties();
       // Check that all settings are known to the configuration class
       //检查下是否在Configuration类里都有相应的setter方法（没有拼写错误）
+      // 创建 Configuration 类的“元信息”对象
       MetaClass metaConfig = MetaClass.forClass(Configuration.class);
       for (Object key : props.keySet()) {
+        // 检测 Configuration 中是否存在相关属性，不存在则抛出异常
         if (!metaConfig.hasSetter(String.valueOf(key))) {
           throw new BuilderException("The setting " + key + " is not known.  Make sure you spelled it correctly (case sensitive).");
         }
@@ -376,9 +398,11 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void environmentsElement(XNode context) throws Exception {
     if (context != null) {
       if (environment == null) {
+        // 获取 default 属性
         environment = context.getStringAttribute("default");
       }
       for (XNode child : context.getChildren()) {
+        // 检测当前 environment 节点的 id 与其父节点 environments 的属性 default 内容是否一致，一致则返回 true，否则返回 false
         String id = child.getStringAttribute("id");
 		//循环比较id是否就是指定的environment
         if (isSpecifiedEnvironment(id)) {

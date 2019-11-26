@@ -30,43 +30,92 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
  */
 public interface ObjectWrapper {
 
-    //get
+  /**
+   * 如采 ObjectWrapper 中封装的是普通的 Bean 对象 ，则 调用相应属性的相应 getter 方法, 如采封装的是集合类，则获取指定 key 或下标对应的 value 位
+   * @param prop
+   * @return
+   */
   Object get(PropertyTokenizer prop);
 
-  //set
+  /**
+   * 如果 ObjectWrapper 中封装的是普通的 Bean 对象 ， 则调用相应属性的相应 setter 方法 ， // 如果封装的是集合类，则设置指定 key 或下标对应的 value 值
+   * @param prop
+   * @param value
+   */
   void set(PropertyTokenizer prop, Object value);
 
-  //查找属性
+  /**
+   * 查找属性表达式指定的属性，第二个参数表示是否忽略属性表达式中的 下 画线
+   * @param name
+   * @param useCamelCaseMapping
+   * @return
+   */
   String findProperty(String name, boolean useCamelCaseMapping);
 
-  //取得getter的名字列表
+  /**
+   * 查找可写属性的名称集合
+   * @return
+   */
   String[] getGetterNames();
 
-  //取得setter的名字列表
+  /**
+   * 查找可读属性的名称集合
+   * 取得setter的名字列表
+   */
   String[] getSetterNames();
 
-  //取得setter的类型
+  /**
+   * 解析属性表达式指定属性的 setter方法的参数类型
+   * @param name
+   * @return
+   */
   Class<?> getSetterType(String name);
 
-  //取得getter的类型
+  /**
+   * 解析属性表达式指定属性的 getter 方法的返回值类型
+   * @param name
+   * @return
+   */
   Class<?> getGetterType(String name);
 
-  //是否有指定的setter
+  /**
+   * 是否有指定的setter
+   */
   boolean hasSetter(String name);
 
-  //是否有指定的getter
+  /**
+   * 是否有指定的getter
+   * @param name
+   * @return
+   */
   boolean hasGetter(String name);
 
-  //实例化属性
+  /**
+   * 为属性表达式指定的属性创建相 应 的 MetaObject 对象
+   * @param name
+   * @param prop
+   * @param objectFactory
+   * @return
+   */
   MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory);
-  
-  //是否是集合
+
+  /**
+   * 是否是集合
+   * @return
+   */
   boolean isCollection();
-  
-  //添加属性
+
+  /**
+   * 调用 Collection 对象的 add()方法
+   * @param element
+   */
   public void add(Object element);
-  
-  //添加属性
+
+  /**
+   * 调用 Collection 对象的 addAll ()方法
+   * @param element
+   * @param <E>
+   */
   public <E> void addAll(List<E> element);
 
 }

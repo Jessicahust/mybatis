@@ -29,6 +29,7 @@ import org.apache.ibatis.session.SqlSession;
  */
 /**
  * 映射器代理，代理模式
+ * Mapper接口，由代理类调用方法
  *
  */
 public class MapperProxy<T> implements InvocationHandler, Serializable {
